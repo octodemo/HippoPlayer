@@ -11,7 +11,7 @@ jobs:
     - uses: DoozyX/clang-format-lint-action@v0.11
       with:
         source: './src'
-        exclude: './src/external ./src/plugins'
+        exclude: './src/external ./src/plugins ./src/hippo_core/miniaudio/src/c_api/miniaudio.h ./src/hippo_core/miniaudio/src/c_api/extras/miniaudio_split/miniaudio.c'
         extensions: 'h,cpp,c'
         clangFormatVersion: 11
         inplace: True
