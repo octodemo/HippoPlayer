@@ -4,14 +4,14 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QMessageBox>
 #include "main_window.h"
 #include "src/hippo_core_loader/hippo_core_loader.h"
 
 extern "C" {
-	#include "src/hippo_core/native/hippo_core.h"
+#include "src/hippo_core/native/hippo_core.h"
 }
 
 int main(int argc, char** argv) {
@@ -28,33 +28,30 @@ int main(int argc, char** argv) {
     HippoCore* core = hippo_core_new();
 
     if (!core) {
-        QMessageBox::critical(
-            nullptr,
-            QStringLiteral("Unable to setup hippo core"),
-            QStringLiteral("Unable to initialize HippoPlayer because the core couldn't be created. Report this issue on the support tracker with the log file attached."));
+        QMessageBox::critical(nullptr, QStringLiteral("Unable to setup hippo core"),
+                              QStringLiteral("Unable to initialize HippoPlayer because the core couldn't be created. "
+                                             "Report this issue on the support tracker with the log file attached."));
         return 1;
     }
 
     const char* error_message = hippo_init_audio_device(core);
 
     if (error_message) {
-        QMessageBox::critical(
-            nullptr,
-            QStringLiteral("Unable to init audio device. Please report this error "),
-            QString::fromUtf8(error_message));
+        QMessageBox::critical(nullptr, QStringLiteral("Unable to init audio device. Please report this error "),
+                              QString::fromUtf8(error_message));
     }
 
     app.setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
     QPalette darkPalette;
-    darkPalette.setColor(QPalette::Window, QColor(53,53,53));
+    darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
-    darkPalette.setColor(QPalette::Base, QColor(25,25,25));
-    darkPalette.setColor(QPalette::AlternateBase, QColor(53,53,53));
+    darkPalette.setColor(QPalette::Base, QColor(25, 25, 25));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
     darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
     darkPalette.setColor(QPalette::ToolTipText, Qt::white);
     darkPalette.setColor(QPalette::Text, Qt::white);
-    darkPalette.setColor(QPalette::Button, QColor(53,53,53));
+    darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
     darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
@@ -63,12 +60,13 @@ int main(int argc, char** argv) {
     darkPalette.setColor(QPalette::HighlightedText, Qt::black);
 
     app.setPalette(darkPalette);
-    app.setStyleSheet(QStringLiteral("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }"));
+    app.setStyleSheet(
+        QStringLiteral("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }"));
 
     MainWindow main_window(core);
     main_window.load_plugins(app.applicationDirPath());
 
-	main_window.setup_default_plugins();
+    main_window.setup_default_plugins();
     main_window.show();
 
     return app.exec();

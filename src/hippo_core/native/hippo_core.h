@@ -18,7 +18,6 @@ typedef struct PluginInfo {
     int library_len;
 } PluginInfo;
 
-
 typedef struct PluginSettings {
     union HSSetting* settings;
     int settings_count;
@@ -34,18 +33,15 @@ typedef struct HippoServiceAPI* (*HippoServiceApiNew)(struct HippoCore* core);
 typedef struct HippoMessageAPI* (*HippoMessageApiNew)(struct HippoCore* core);
 typedef const char* (*HippoInitAudioDevice)(struct HippoCore* core);
 
-
-typedef void (*HippoUpdateMessages)(struct HippoCore* core,
-                                    void* user_data,
-                                    int count,
-                                    HippoGetMessages get_messages,
+typedef void (*HippoUpdateMessages)(struct HippoCore* core, void* user_data, int count, HippoGetMessages get_messages,
                                     HippoSendMessage send_messages);
 typedef void (*HippoPlaylistRemoveEntries)(struct HippoCore* core, int playlist_entry, int count);
 typedef int (*HippoPlaylistCount)(struct HippoCore* core);
 typedef const char* (*HippoPlaylistGet)(struct HippoCore* core, int row, int col, int* len);
 typedef PluginInfo (*HippoGetPlaybackPluginInfo)(struct HippoCore* core, int index);
 typedef PluginSettings (*HippoGetPlaybackPluginSettings)(struct HippoCore* core, const char* plugin_name);
-typedef void (*HippoPlaybackSettingsUpdated)(struct HippoCore* core, const char* plugin_name, const PluginSettings* settings);
+typedef void (*HippoPlaybackSettingsUpdated)(struct HippoCore* core, const char* plugin_name,
+                                             const PluginSettings* settings);
 typedef void (*HippoPlaybackSettingsReset)(struct HippoCore* core, const char* plugin_name);
 
 extern HippoCoreNew hippo_core_new;
@@ -65,4 +61,3 @@ extern HippoPlaybackSettingsReset hippo_playback_settings_reset;
 #ifdef __cplusplus
 }
 #endif
-

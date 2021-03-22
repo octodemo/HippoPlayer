@@ -1,13 +1,12 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #ifndef _WIN32
-#include <unistd.h>
 #include <errno.h>
+#include <unistd.h>
 #endif
-#include "hippo_core_loader.h"
 #include "../hippo_core/native/hippo_core.h"
+#include "hippo_core_loader.h"
 
 HippoCoreNew hippo_core_new;
 HippoCoreDrop hippo_core_drop;
@@ -29,13 +28,13 @@ HippoInitAudioDevice hippo_init_audio_device;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static bool file_exists(const char* filename) {
-	FILE* t = fopen(filename, "rb");
-	if (t) {
-		fclose(t);
-		return true;
-	}
+    FILE* t = fopen(filename, "rb");
+    if (t) {
+        fclose(t);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,10 +57,7 @@ static bool file_exists(const char* filename) {
 static struct {
     long lasterror;
     const char* err_rutin;
-} s_dll_err = {
-    0,
-    NULL
-};
+} s_dll_err = {0, NULL};
 
 // not used on Win32 so can be anything
 #define RTLD_NOW 0
@@ -69,20 +65,20 @@ static struct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 WCHAR* convert_utf8_to_wide(const char* input) {
-	int len = MultiByteToWideChar(CP_UTF8, 0, input, -1, NULL, 0);
-	len *= 4;
-	WCHAR* output = (WCHAR*)malloc(len);
-	MultiByteToWideChar(CP_UTF8, 0, input, -1, output, len);
+    int len = MultiByteToWideChar(CP_UTF8, 0, input, -1, NULL, 0);
+    len *= 4;
+    WCHAR* output = (WCHAR*)malloc(len);
+    MultiByteToWideChar(CP_UTF8, 0, input, -1, output, len);
 
-	return output;
+    return output;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void* dlopen(const char* filename, int flags) {
-	(void)flags;
+    (void)flags;
 
-	WCHAR* wide_filename = convert_utf8_to_wide(filename);
+    WCHAR* wide_filename = convert_utf8_to_wide(filename);
 
     HINSTANCE inst = LoadLibrary(wide_filename);
     if (inst == NULL) {
@@ -113,25 +109,25 @@ int dlclose(void* handle) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void* dlsym(void* handle, const char* name) {
-	WCHAR* wide_name = convert_utf8_to_wide(name);
+    WCHAR* wide_name = convert_utf8_to_wide(name);
 
-    FARPROC fp = GetProcAddress ((HINSTANCE)handle, name);
+    FARPROC fp = GetProcAddress((HINSTANCE)handle, name);
     if (!fp) {
-        s_dll_err.lasterror = GetLastError ();
+        s_dll_err.lasterror = GetLastError();
         s_dll_err.err_rutin = "dlsym";
     }
-	free(wide_name);
+    free(wide_name);
 
-    return (void *)(intptr_t)fp;
+    return (void*)(intptr_t)fp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const char* dlerror() {
-	static char errstr[256];
+    static char errstr[256];
 
     if (s_dll_err.lasterror) {
-        sprintf (errstr, "%s error #%ld", s_dll_err.err_rutin, s_dll_err.lasterror);
+        sprintf(errstr, "%s error #%ld", s_dll_err.err_rutin, s_dll_err.lasterror);
         return errstr;
     } else {
         return NULL;
@@ -143,14 +139,14 @@ const char* dlerror() {
 /// Loads the hippo_player core shared object and resolve the symbols
 extern int HippoCore_load() {
 #if defined(HIPPO_MAC)
-	#define LOAD_PATH "macosx-clang"
-	const char* core_name = "libhippo_core.dylib";
+#define LOAD_PATH "macosx-clang"
+    const char* core_name = "libhippo_core.dylib";
 #elif defined(_WIN32)
-	#define LOAD_PATH "win64-msvc"
-	const char* core_name = "hippo_core.dll";
+#define LOAD_PATH "win64-msvc"
+    const char* core_name = "hippo_core.dll";
 #else
-	#define LOAD_PATH "linux-gcc"
-	const char* core_name = "libhippo_core.so";
+#define LOAD_PATH "linux-gcc"
+    const char* core_name = "libhippo_core.so";
 #endif
 
 #if defined(HIPPO_DEBUG)
@@ -159,81 +155,81 @@ extern int HippoCore_load() {
 #define TARGET_TYPE "release"
 #endif
 
-	void* core_handle = NULL;
+    void* core_handle = NULL;
 
-	if (file_exists(core_name)) {
-		core_handle = dlopen(core_name, RTLD_NOW);
+    if (file_exists(core_name)) {
+        core_handle = dlopen(core_name, RTLD_NOW);
 
-		if (!core_handle) {
-			printf("Unable to open %s: %s", core_name, dlerror());
-			return 0;
-		}
-	} else {
-		char load_path[4096] = { 0 };
+        if (!core_handle) {
+            printf("Unable to open %s: %s", core_name, dlerror());
+            return 0;
+        }
+    } else {
+        char load_path[4096] = {0};
 
 #ifndef _WIN32
 
 #ifdef HIPPO_MAC
-		int size = sizeof(load_path);
-		extern int _NSGetExecutablePath(char *buf, uint32_t *bufsize);
-		_NSGetExecutablePath(load_path, &size);
+        int size = sizeof(load_path);
+        extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
+        _NSGetExecutablePath(load_path, &size);
 
-		int i = 0;
+        int i = 0;
 
-		for (i = size - 1; i != 0; --i) {
-			if (load_path[i] == '/') {
-				break;
-			}
-		}
+        for (i = size - 1; i != 0; --i) {
+            if (load_path[i] == '/') {
+                break;
+            }
+        }
 
-		load_path[i] = 0;
+        load_path[i] = 0;
 #else
-		if (0 == getcwd(load_path, sizeof(load_path))) {
-			printf("getwd failed %s\n", strerror(errno));
-		}
+        if (0 == getcwd(load_path, sizeof(load_path))) {
+            printf("getwd failed %s\n", strerror(errno));
+        }
 
 #endif
-		strcat(load_path, "/");
+        strcat(load_path, "/");
 #endif
-		strcat(load_path, core_name);
-		if (file_exists(load_path)) {
-			core_handle = dlopen(load_path, RTLD_NOW);
+        strcat(load_path, core_name);
+        if (file_exists(load_path)) {
+            core_handle = dlopen(load_path, RTLD_NOW);
 
-			if (core_handle)
-				goto done;
-		}
+            if (core_handle)
+                goto done;
+        }
 
-		sprintf(load_path, "t2-output/%s-%s-default/%s", LOAD_PATH, TARGET_TYPE, core_name);
+        sprintf(load_path, "t2-output/%s-%s-default/%s", LOAD_PATH, TARGET_TYPE, core_name);
 
-		core_handle = dlopen(load_path, RTLD_NOW);
+        core_handle = dlopen(load_path, RTLD_NOW);
 
-		if (!core_handle) {
-			printf("Unable to open %s: %s", load_path, dlerror());
-			return 0;
-		}
-	}
+        if (!core_handle) {
+            printf("Unable to open %s: %s", load_path, dlerror());
+            return 0;
+        }
+    }
 
 done:
 
-	hippo_core_new = (HippoCoreNew)dlsym(core_handle, "hippo_core_new");
-	hippo_core_drop = (HippoCoreDrop)dlsym(core_handle, "hippo_core_drop");
-	hippo_play_file = (HippoPlayFile)dlsym(core_handle, "hippo_play_file");
-	hippo_service_api_new = (HippoServiceApiNew)dlsym(core_handle, "hippo_service_api_new");
-	hippo_message_api_new = (HippoMessageApiNew)dlsym(core_handle, "hippo_message_api_new");
-	hippo_update_messages = (HippoUpdateMessages)dlsym(core_handle, "hippo_update_messages");
+    hippo_core_new = (HippoCoreNew)dlsym(core_handle, "hippo_core_new");
+    hippo_core_drop = (HippoCoreDrop)dlsym(core_handle, "hippo_core_drop");
+    hippo_play_file = (HippoPlayFile)dlsym(core_handle, "hippo_play_file");
+    hippo_service_api_new = (HippoServiceApiNew)dlsym(core_handle, "hippo_service_api_new");
+    hippo_message_api_new = (HippoMessageApiNew)dlsym(core_handle, "hippo_message_api_new");
+    hippo_update_messages = (HippoUpdateMessages)dlsym(core_handle, "hippo_update_messages");
 
-	hippo_playlist_remove_entries = (HippoPlaylistRemoveEntries)dlsym(core_handle, "hippo_playlist_remove_entries");
-	hippo_playlist_count = (HippoPlaylistCount)dlsym(core_handle, "hippo_playlist_count");
-	hippo_playlist_get = (HippoPlaylistGet)dlsym(core_handle, "hippo_playlist_get");
+    hippo_playlist_remove_entries = (HippoPlaylistRemoveEntries)dlsym(core_handle, "hippo_playlist_remove_entries");
+    hippo_playlist_count = (HippoPlaylistCount)dlsym(core_handle, "hippo_playlist_count");
+    hippo_playlist_get = (HippoPlaylistGet)dlsym(core_handle, "hippo_playlist_get");
 
-	hippo_init_audio_device = (HippoInitAudioDevice)dlsym(core_handle, "hippo_init_audio_device");
+    hippo_init_audio_device = (HippoInitAudioDevice)dlsym(core_handle, "hippo_init_audio_device");
 
-	hippo_get_playback_plugin_info = (HippoGetPlaybackPluginInfo)dlsym(core_handle, "hippo_get_playback_plugin_info");
-	hippo_get_playback_plugin_settings = (HippoGetPlaybackPluginSettings)dlsym(core_handle, "hippo_get_playback_plugin_settings");
-	hippo_playback_settings_updated = (HippoPlaybackSettingsUpdated)dlsym(core_handle, "hippo_playback_settings_updated");
-	hippo_playback_settings_reset = (HippoPlaybackSettingsReset)dlsym(core_handle, "hippo_playback_settings_reset");
+    hippo_get_playback_plugin_info = (HippoGetPlaybackPluginInfo)dlsym(core_handle, "hippo_get_playback_plugin_info");
+    hippo_get_playback_plugin_settings =
+        (HippoGetPlaybackPluginSettings)dlsym(core_handle, "hippo_get_playback_plugin_settings");
+    hippo_playback_settings_updated =
+        (HippoPlaybackSettingsUpdated)dlsym(core_handle, "hippo_playback_settings_updated");
+    hippo_playback_settings_reset = (HippoPlaybackSettingsReset)dlsym(core_handle, "hippo_playback_settings_reset");
 
-	return 1;
+    return 1;
 }
-
-

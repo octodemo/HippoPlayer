@@ -307,7 +307,7 @@ QString PlaylistModel::get_entry(int row, int col) const {
     }
 
     std::string find_text = std::string(str, len);
-    //StringLen find_text = {(char*)str, len};
+    // StringLen find_text = {(char*)str, len};
 
     auto search = m_qstring_cache.find(find_text);
     if (search != m_qstring_cache.end()) {
@@ -316,9 +316,9 @@ QString PlaylistModel::get_entry(int row, int col) const {
 
     // Not found, so we need create the QString and the char entry
     QString q_string = QString::fromUtf8(str, len);
-    //char* text = (char*)malloc(len);
-    //memcpy(text, str, len);
-    //StringLen insert_text = {text, len};
+    // char* text = (char*)malloc(len);
+    // memcpy(text, str, len);
+    // StringLen insert_text = {text, len};
     m_qstring_cache[find_text] = q_string;
 
     return q_string;

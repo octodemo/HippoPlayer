@@ -1,7 +1,7 @@
 #include "device_panel.h"
-#include "ui_device_panel.h"
 #include "../../../plugin_api/HippoMessages.h"
 #include "../../../plugin_api/HippoPlugin.h"
+#include "ui_device_panel.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -10,7 +10,7 @@ DevicePanel::DevicePanel(const struct HippoMessageAPI* messages_api, QWidget* pa
     m_ui->setupUi(this);
 
     // Setup for default device with values that seems reasonable
-    auto t = DeviceInfo { 1, 2, 0, 0 };
+    auto t = DeviceInfo{1, 2, 0, 0};
     m_device_info.push_back(t);
     m_ui->channels->clear();
 
@@ -19,10 +19,8 @@ DevicePanel::DevicePanel(const struct HippoMessageAPI* messages_api, QWidget* pa
     m_ui->channels->setCurrentIndex(0);
     m_ui->channels->setEnabled(false);
 
-    QObject::connect(
-        m_ui->device_name, QOverload<int>::of(&QComboBox::currentIndexChanged),
-        this,
-        &DevicePanel::change_device);
+    QObject::connect(m_ui->device_name, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+                     &DevicePanel::change_device);
 
     flatbuffers::FlatBufferBuilder builder(1024);
 
@@ -50,14 +48,14 @@ void DevicePanel::get_devices(const struct HippoReplyOutputDevices* messages) {
 
     // Setup for default device with values that seems reasonable
     int index = 0;
-    auto t = DeviceInfo { 1, 2, 11025, 192000 };
+    auto t = DeviceInfo{1, 2, 11025, 192000};
     m_device_info.push_back(t);
 
     for (auto const& msg : *messages->devices()) {
         const char* device_name = msg->name()->c_str();
         QString dev_name = QString::fromUtf8(device_name);
         m_ui->device_name->addItem(dev_name);
-        auto t = DeviceInfo {
+        auto t = DeviceInfo{
             msg->min_channels(),
             msg->max_channels(),
             msg->min_sample_rate(),
@@ -84,20 +82,7 @@ void DevicePanel::get_devices(const struct HippoReplyOutputDevices* messages) {
 // Standard sample rates we setup
 
 static uint32_t s_standard_sample_rates[] = {
-    8000,
-    11025,
-    16000,
-    22050,
-    24000,
-    32000,
-    44100,
-    48000,
-    88200,
-    96000,
-    176400,
-    192000,
-    352800,
-    384000,
+    8000, 11025, 16000, 22050, 24000, 32000, 44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000,
 };
 
 #define sizeof_array(t) (sizeof(t) / sizeof(t[0]))
@@ -110,7 +95,7 @@ void DevicePanel::change_device(int index) {
     }
 
     m_ui->sample_rate->clear();
-    //m_ui->channels->clear();
+    // m_ui->channels->clear();
 
     const auto& device = m_device_info[index];
 
@@ -152,7 +137,9 @@ void DevicePanel::change_device(int index) {
 
     for (int i = min_start_index; i <= max_start_index; ++i) {
         auto t = s_standard_sample_rates[i];
-        if (t == 48000) { temp_selection = i; }
+        if (t == 48000) {
+            temp_selection = i;
+        }
         m_ui->sample_rate->addItem(QString::number(t));
     }
 

@@ -41,19 +41,17 @@ private:
 };
 */
 
-class PlaylistModel : public QAbstractTableModel
-{
+class PlaylistModel : public QAbstractTableModel {
     Q_OBJECT
 public:
-    PlaylistModel(HippoCore* core, QObject *parent);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const ;
+    PlaylistModel(HippoCore* core, QObject* parent);
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
 private:
-
     struct StringLen {
         char* text;
         int len;
@@ -84,7 +82,7 @@ private:
     */
 
     // Have a cache for strings to redure recreation of QStrings
-    //mutable std::map<StringLen, QString, CmpString> m_qstring_cache;
+    // mutable std::map<StringLen, QString, CmpString> m_qstring_cache;
     mutable std::map<std::string, QString> m_qstring_cache;
     // I really don't like to have this here but will do for now
     HippoCore* m_core = nullptr;

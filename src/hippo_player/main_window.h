@@ -25,7 +25,7 @@ public:
     void setup_default_plugins();
     QWidget* create_plugin_by_name(const QString& plugin_name);
     QWidget* create_plugin_by_index(int index);
-	void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event);
 
 private:
     // Callback into the core to get internal messages
@@ -65,6 +65,6 @@ private:
     void create_plugin_instance(int index);
     Q_SLOT void add_files();
     Q_SLOT void add_directory();
-    //Q_SLOT void remove_playlist_entry();
+    // Q_SLOT void remove_playlist_entry();
     Q_SLOT void update_messages();
 };

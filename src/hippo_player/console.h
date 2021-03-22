@@ -12,11 +12,9 @@ class QSyntaxHighlighter;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ConsoleView : public QWidget
-{
+class ConsoleView : public QWidget {
     Q_OBJECT
 public:
-
     ConsoleView(const struct HippoMessageAPI* messages_api, QWidget* parent);
     virtual ~ConsoleView();
 
@@ -42,4 +40,3 @@ private:
     uint8_t m_active_mask = 0xff;
     std::vector<uint8_t> m_line_masks;
 };
-
