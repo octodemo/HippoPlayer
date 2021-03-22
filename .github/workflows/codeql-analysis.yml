@@ -49,8 +49,8 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    # - name: Autobuild
+    #   uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -62,6 +62,31 @@ jobs:
     #- run: |
     #   make bootstrap
     #   make release
+    # install Qt with cache
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: QtCache
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+
+    - name: Install deps
+      run: sudo apt-get install libasound2-dev mesa-common-dev libx11-dev libxcursor-dev libxinerama-dev libxkbcommon-dev libxrandr-dev libxi-dev libgl1-mesa-dev
+
+    - name: Install Tundra
+      run: git clone --recursive https://github.com/deplinenoise/tundra.git && cd tundra && make -j2 && sudo make install && cd ..
+
+    - name: Build Debug
+      run: |
+        export QT5_BIN=$Qt5_DIR/bin
+        export QT5_INC=$Qt5_DIR/include
+        export QT5_LIB=$Qt5_DIR/lib
+        tundra2 linux-gcc-debug
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
