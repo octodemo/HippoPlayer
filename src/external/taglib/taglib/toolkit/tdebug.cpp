@@ -58,7 +58,7 @@ namespace TagLib
     {
       std::string bits = std::bitset<8>(v[i]).to_string();
       String msg = Utils::formatString(
-        "*** [%ld] - char '%c' - int %d, 0x%02x, 0b%s\n",
+        "*** [%d] - char '%c' - int %d, 0x%02x, 0b%s\n",
         i, v[i], v[i], v[i], bits.c_str());
 
       debugListener->printMessage(msg);
