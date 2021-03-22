@@ -4,15 +4,15 @@
 
 #include <QtCore/QRegularExpression>
 #include <QtCore/QSettings>
+#include <QtGui/QSyntaxHighlighter>
 #include <QtGui/QTextCursor>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtGui/QSyntaxHighlighter>
 #include "../../../plugin_api/HippoMessages.h"
 #include "../../../plugin_api/HippoPlugin.h"
 #include "ui_console.h"
@@ -20,7 +20,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Highlighter : public QSyntaxHighlighter {
-
 public:
     Highlighter(QTextDocument* parent = 0);
 
@@ -37,26 +36,22 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//static const char* level_colors[] = {"\x1b[94m", "\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"};
+// static const char* level_colors[] = {"\x1b[94m", "\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"};
 
 static QColor s_colors[] = {
-    QColor(92, 92, 255),    // Trace (light blue)
-    QColor(0, 205, 205),    // Debug (Cyan)
-    QColor(0, 205, 0),      // Info (Green)
-    QColor(205, 205, 0),    // Warn (Yellow),
-    QColor(205, 0, 0),      // Error (Red),
-    QColor(205, 0, 205),    // Debug (magneta)
+    QColor(92, 92, 255),  // Trace (light blue)
+    QColor(0, 205, 205),  // Debug (Cyan)
+    QColor(0, 205, 0),    // Info (Green)
+    QColor(205, 205, 0),  // Warn (Yellow),
+    QColor(205, 0, 0),    // Error (Red),
+    QColor(205, 0, 205),  // Debug (magneta)
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static QString s_warn_levels[] = {
-    QStringLiteral("TRACE"),
-    QStringLiteral("DEBUG"),
-    QStringLiteral("INFO"),
-    QStringLiteral("WARN"),
-    QStringLiteral("ERROR"),
-    QStringLiteral("FATAL"),
+    QStringLiteral("TRACE"), QStringLiteral("DEBUG"), QStringLiteral("INFO"),
+    QStringLiteral("WARN"),  QStringLiteral("ERROR"), QStringLiteral("FATAL"),
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,8 +59,8 @@ static QString s_warn_levels[] = {
 enum LogLevelMasks {
     Level_Trace = 1 << 1,
     Level_Debug = 1 << 2,
-    Level_Info  = 1 << 3,
-    Level_Warn  = 1 << 4,
+    Level_Info = 1 << 3,
+    Level_Warn = 1 << 4,
     Level_Error = 1 << 5,
     Level_Fatal = 1 << 6,
     Level_All = Level_Trace | Level_Debug | Level_Info | Level_Warn | Level_Error | Level_Fatal,
@@ -178,12 +173,24 @@ void ConsoleView::log_messages(const struct HippoLogMessages* messages) {
         for (size_t i = 0; i < len; ++i) {
             if (text[i] == ']') {
                 switch (text[i + 2]) {
-                    case 'T' : mask = Level_Trace; break;
-                    case 'D' : mask = Level_Debug; break;
-                    case 'I' : mask = Level_Info; break;
-                    case 'W' : mask = Level_Warn; break;
-                    case 'E' : mask = Level_Error; break;
-                    case 'F' : mask = Level_Fatal; break;
+                    case 'T':
+                        mask = Level_Trace;
+                        break;
+                    case 'D':
+                        mask = Level_Debug;
+                        break;
+                    case 'I':
+                        mask = Level_Info;
+                        break;
+                    case 'W':
+                        mask = Level_Warn;
+                        break;
+                    case 'E':
+                        mask = Level_Error;
+                        break;
+                    case 'F':
+                        mask = Level_Fatal;
+                        break;
                 }
             }
         }
@@ -253,8 +260,8 @@ void ConsoleView::select_log_file(bool checked) {
     QString log_file;
 
     if (checked) {
-        log_file = QFileDialog::getSaveFileName(this, tr("Select Log File"), m_log_file, tr("Log files (*.txt)"),  nullptr,
-                                QFileDialog::DontUseNativeDialog);
+        log_file = QFileDialog::getSaveFileName(this, tr("Select Log File"), m_log_file, tr("Log files (*.txt)"),
+                                                nullptr, QFileDialog::DontUseNativeDialog);
 
         if (log_file.isEmpty()) {
             m_ui->log_file->setChecked(false);
@@ -268,8 +275,7 @@ void ConsoleView::select_log_file(bool checked) {
             if (!writeable) {
                 m_ui->log_file->setChecked(false);
                 QMessageBox::critical(
-                    this,
-                    m_log_file,
+                    this, m_log_file,
                     tr("Unable to write to this location. Make sure you have permissions to write to this file."));
                 return;
             }
@@ -295,8 +301,7 @@ void ConsoleView::clear_log() {
 
     flatbuffers::FlatBufferBuilder builder(1024);
 
-    builder.Finish(CreateHippoMessageDirect(builder, MessageType_log_clear,
-                                            CreateHippoLogClear(builder).Union()));
+    builder.Finish(CreateHippoMessageDirect(builder, MessageType_log_clear, CreateHippoLogClear(builder).Union()));
     HippoMessageAPI_send(m_message_api, builder.GetBufferPointer(), builder.GetSize());
 }
 
@@ -315,7 +320,6 @@ void ConsoleView::incoming_messages(const unsigned char* data, int len) {
             break;
     }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -355,4 +359,3 @@ void ConsoleView::read_settings() {
     m_active_mask |= uint8_t(m_ui->error_check->isChecked()) << 5;
     m_active_mask |= uint8_t(m_ui->fatal_check->isChecked()) << 6;
 }
-

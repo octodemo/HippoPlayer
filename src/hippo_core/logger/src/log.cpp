@@ -96,7 +96,7 @@ static int gettimeofday(struct timeval* tp) {
 static void get_time(char* buffer) {
     // For Miliseconds
     int millisec;
-    //struct tm* tm_info;
+    // struct tm* tm_info;
     struct timeval tv;
 
     // For Time
@@ -106,8 +106,7 @@ static void get_time(char* buffer) {
     gettimeofday(&tv);
 
     millisec = int(tv.tv_usec / 1000.0);
-    if (millisec >= 1000)
-    {
+    if (millisec >= 1000) {
         millisec -= 1000;
         tv.tv_sec++;
     }
@@ -132,8 +131,8 @@ static const char* level_colors[] = {"\x1b[94m", "\x1b[36m", "\x1b[32m", "\x1b[3
 static void stdout_callback(log_Event* ev, va_list ap) {
 #ifdef USE_LOG_COLOR
     if (ev->file) {
-        fprintf(ev->udata, "%s \x1b[37m[%-20s] %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ", ev->time, ev->base_name, level_colors[ev->level],
-                level_strings[ev->level], ev->file, ev->line);
+        fprintf(ev->udata, "%s \x1b[37m[%-20s] %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ", ev->time, ev->base_name,
+                level_colors[ev->level], level_strings[ev->level], ev->file, ev->line);
     } else {
         fprintf(ev->udata, "%s \x1b[37m[%-20s] %s%-5s\x1b[0m ", ev->time, ev->base_name, level_colors[ev->level],
                 level_strings[ev->level]);
@@ -164,7 +163,9 @@ static const char* html_colors[] = {
 };
         written_chars = sprintf(buffer, "<tt> " COL_T " %s " ES COL_G "[%-40s]" ES " %s%-5s " ES COL_T,
                         ev->time, ev->base_name, html_colors[0], level_strings[ev->level]);
-  //<tt> <span style="color:gainsboro"> 15:19:16.000 </span> <span style="color:gray"> [VGM 0.0.1           ] </span> <span style="color:green"> INFO </span> <span>  <span style="color:gainsboro"> Unsupported /home/emoon/Music/dune/dune ii - 00.adl </span> </tt>
+  //<tt> <span style="color:gainsboro"> 15:19:16.000 </span> <span style="color:gray"> [VGM 0.0.1           ] </span>
+<span style="color:green"> INFO </span> <span>  <span style="color:gainsboro"> Unsupported /home/emoon/Music/dune/dune
+ii - 00.adl </span> </tt>
 */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +175,8 @@ static void file_console_out(log_Event* ev, va_list ap) {
     int written_chars = 0;
 
     if (ev->file) {
-        written_chars = sprintf(buffer, "%s [%-20s] %-5s %s:%d: ", ev->time, ev->base_name, level_strings[ev->level], ev->file, ev->line);
+        written_chars = sprintf(buffer, "%s [%-20s] %-5s %s:%d: ", ev->time, ev->base_name, level_strings[ev->level],
+                                ev->file, ev->line);
     } else {
         written_chars = sprintf(buffer, "%s [%-20s] %-5s ", ev->time, ev->base_name, level_strings[ev->level]);
     }
@@ -199,9 +201,8 @@ static void file_console_out(log_Event* ev, va_list ap) {
 /*
 static void file_callback(log_Event* ev) {
     if (ev->file) {
-        fprintf(ev->udata, "%s [%-20s] %-5s %s:%d: ", ev->time, ev->base_name, level_strings[ev->level], ev->file, ev->line);
-    } else {
-        fprintf(ev->udata, "%s [%-20s] %-5s ", ev->time, ev->base_name, level_strings[ev->level]);
+        fprintf(ev->udata, "%s [%-20s] %-5s %s:%d: ", ev->time, ev->base_name, level_strings[ev->level], ev->file,
+ev->line); } else { fprintf(ev->udata, "%s [%-20s] %-5s ", ev->time, ev->base_name, level_strings[ev->level]);
     }
 
     vfprintf(ev->udata, ev->fmt, ev->ap);
@@ -280,7 +281,7 @@ extern "C" void hippo_log(HippoLogAPIState* state, int level, const char* file, 
 
     get_time(ev.time);
 
-    //stdout_callback(&ev);
+    // stdout_callback(&ev);
 
     va_list ap;
     va_start(ap, fmt);

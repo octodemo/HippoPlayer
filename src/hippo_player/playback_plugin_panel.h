@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QDialog>
-#include <vector>
 #include <string>
+#include <vector>
 #include "src/hippo_core/native/hippo_core.h"
 
 class Ui_PlaybackPluginPanel;
@@ -63,4 +63,3 @@ private:
     int m_active_file_ext_index = 0;
     const char* m_active_plugin_name = nullptr;
 };
-

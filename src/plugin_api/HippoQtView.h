@@ -7,7 +7,8 @@ class QAbstractItemModel;
 
 class HippoQtView {
 public:
-    virtual ~HippoQtView() {}
+    virtual ~HippoQtView() {
+    }
 
     // Create a the view for the plugin.
     virtual QWidget* create(struct HippoServiceAPI* service_api, QAbstractItemModel* model = nullptr) = 0;
@@ -16,8 +17,6 @@ public:
     virtual void incoming_messages(const unsigned char* data, int len) = 0;
 };
 
-
 #define HippoQtView_iid "org.hippoplayer.HippoQtView"
 
 Q_DECLARE_INTERFACE(HippoQtView, HippoQtView_iid)
-

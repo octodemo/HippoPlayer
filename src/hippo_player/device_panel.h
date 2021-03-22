@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QDialog>
-#include <vector>
 #include <string>
+#include <vector>
 
 class Ui_DevicePanel;
 class QListWidgetItem;

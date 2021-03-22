@@ -3,9 +3,9 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
-#include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WINDOW_HEIGHT 480
 #define WINDOW_WIDTH 640
@@ -19,13 +19,13 @@ static void error_callback(int error, const char* description) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void* glfwNativeWindowHandle(GLFWwindow* _window) {
-#	if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
     return (void*)(uintptr_t)glfwGetX11Window(_window);
-#	elif BX_PLATFORM_OSX
+#elif BX_PLATFORM_OSX
     return glfwGetCocoaWindow(_window);
-#	elif BX_PLATFORM_WINDOWS
+#elif BX_PLATFORM_WINDOWS
     return glfwGetWin32Window(_window);
-#	endif // BX_PLATFORM_
+#endif  // BX_PLATFORM_
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ int main(void) {
     bgfx::setPlatformData(pd);
 
     bgfx::Init bgfxInit;
-    //bgfxInit.type = bgfx::RendererType::OpenGL;
+    // bgfxInit.type = bgfx::RendererType::OpenGL;
     bgfxInit.type = bgfx::RendererType::Count;
     bgfxInit.resolution.width = WINDOW_WIDTH;
     bgfxInit.resolution.height = WINDOW_HEIGHT;
@@ -84,7 +84,6 @@ int main(void) {
     glfwSetKeyCallback(window, key_callback);
 
     while (!glfwWindowShouldClose(window)) {
-
         bgfx::setViewRect(0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         bgfx::touch(0);
         bgfx::frame();
@@ -97,4 +96,3 @@ int main(void) {
 
     return 0;
 }
-

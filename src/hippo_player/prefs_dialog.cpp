@@ -1,10 +1,10 @@
 #include "prefs_dialog.h"
-#include "playback_plugin_priority.h"
-#include "playback_plugin_panel.h"
-#include "device_panel.h"
-#include "ui_prefs_dialog.h"
-#include <QtWidgets/QTreeWidgetItem>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTreeWidgetItem>
+#include "device_panel.h"
+#include "playback_plugin_panel.h"
+#include "playback_plugin_priority.h"
+#include "ui_prefs_dialog.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,13 +55,14 @@ PrefsDialog::PrefsDialog(const struct HippoCore* core, const struct HippoMessage
     m_ui->config_category->addTopLevelItem(playback);
     m_ui->config_category->expandItem(playback);
 
-    //m_ui->panel->setCurrentIndex(0);
+    // m_ui->panel->setCurrentIndex(0);
 
     QObject::connect(m_ui->config_category, &QTreeWidget::currentItemChanged, this, &PrefsDialog::change_layout);
     QObject::connect(this, &QDialog::finished, this, &PrefsDialog::dialog_finished);
     QObject::connect(m_ui->button_box, &QDialogButtonBox::accepted, this, &QDialog::accept);
     QObject::connect(m_ui->button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    QObject::connect(m_ui->button_box->button(QDialogButtonBox::Reset), &QPushButton::clicked, this, &PrefsDialog::reset);
+    QObject::connect(m_ui->button_box->button(QDialogButtonBox::Reset), &QPushButton::clicked, this,
+                     &PrefsDialog::reset);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +95,8 @@ void PrefsDialog::dialog_finished(int state) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PrefsDialog::change_layout(QTreeWidgetItem* curr, QTreeWidgetItem* prev) {
-    if (!curr) curr = prev;
+    if (!curr)
+        curr = prev;
 
     m_index = curr->data(0, Qt::UserRole).toInt();
 
@@ -114,4 +116,6 @@ void PrefsDialog::incoming_messages(const unsigned char* data, int len) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PrefsDialog::~PrefsDialog() { delete m_ui; }
+PrefsDialog::~PrefsDialog() {
+    delete m_ui;
+}

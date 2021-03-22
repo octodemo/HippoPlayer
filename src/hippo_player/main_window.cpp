@@ -52,8 +52,7 @@ MainWindow::MainWindow(HippoCore* core) : QMainWindow(0), m_core(core) {
     m_console = new ConsoleView(m_general_messages, nullptr);
     m_prefs_dialog = new PrefsDialog(m_core, m_general_messages);
 
-    m_docking_manager->addToolWindow(m_console, FastDock::NewFloatingArea,
-                                     FastDock::ToolWindowProperty::HideOnClose);
+    m_docking_manager->addToolWindow(m_console, FastDock::NewFloatingArea, FastDock::ToolWindowProperty::HideOnClose);
 
     m_docking_manager->hideToolWindow(m_console);
 
@@ -148,8 +147,8 @@ void MainWindow::handle_incoming_messages(const unsigned char* data, int len) {
 
         case MessageType_select_song: {
             m_playlist_model->layoutChanged();
-            //auto msg = message->message_as_select_song();
-            //m_playlist_model->update_index(msg);
+            // auto msg = message->message_as_select_song();
+            // m_playlist_model->update_index(msg);
             break;
         }
 
@@ -464,9 +463,9 @@ void MainWindow::setup_default_plugins() {
 
     m_docking_manager->addToolWindow(player, FastDock::EmptySpace);
 
-    m_docking_manager->addToolWindow(
-        music_info, FastDock::AreaReference(FastDock::RightOf, m_docking_manager->areaOf(player)));
+    m_docking_manager->addToolWindow(music_info,
+                                     FastDock::AreaReference(FastDock::RightOf, m_docking_manager->areaOf(player)));
 
-    m_docking_manager->addToolWindow(
-        playlist, FastDock::AreaReference(FastDock::BottomOf, m_docking_manager->areaOf(player)));
+    m_docking_manager->addToolWindow(playlist,
+                                     FastDock::AreaReference(FastDock::BottomOf, m_docking_manager->areaOf(player)));
 }

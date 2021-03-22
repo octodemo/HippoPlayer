@@ -5,8 +5,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef _cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include "HippoSettings.h"
@@ -14,22 +13,22 @@ extern "C"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 enum HippoProbeResult {
-	HippoProbeResult_Supported,
-	HippoProbeResult_Unsupported,
-	HippoProbeResult_Unsure,
+    HippoProbeResult_Supported,
+    HippoProbeResult_Unsupported,
+    HippoProbeResult_Unsure,
 };
 
 typedef enum HippoFileSeek {
-	HippoFileSeek_Start,
-	HippoFileSeek_Current,
-	HippoFileSeek_End,
+    HippoFileSeek_Start,
+    HippoFileSeek_Current,
+    HippoFileSeek_End,
 } HippoFileSeek;
 
 typedef void* HippoIoHandle;
 
 typedef struct HippoIoResult {
-	const char* error_message;
-	int status;
+    const char* error_message;
+    int status;
 } HippoIoResult;
 
 struct HippoApiPrivData;
@@ -38,22 +37,24 @@ typedef int32_t HippoIoErrorCode;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef struct HippoIoAPI {
-	int (*exists)(struct HippoApiPrivData* priv_data, const char* filename);
+    int (*exists)(struct HippoApiPrivData* priv_data, const char* filename);
 
-	HippoIoErrorCode (*read_file_to_memory)(struct HippoApiPrivData* priv_data, const char* filename, void** dest, uint64_t* size);
-	HippoIoErrorCode (*free_file_to_memory)(struct HippoApiPrivData* priv_data, void* dest);
+    HippoIoErrorCode (*read_file_to_memory)(struct HippoApiPrivData* priv_data, const char* filename, void** dest,
+                                            uint64_t* size);
+    HippoIoErrorCode (*free_file_to_memory)(struct HippoApiPrivData* priv_data, void* dest);
 
     // Io functions for more control
-	HippoIoErrorCode (*open)(struct HippoApiPrivData* priv_data, const char* target, HippoIoHandle* handle);
-	HippoIoErrorCode (*close)(HippoIoHandle handle);
-	HippoIoErrorCode (*size)(HippoIoHandle handle, uint64_t* res);
-	HippoIoErrorCode (*read)(HippoIoHandle handle, void* dest, uint64_t size);
-	HippoIoErrorCode (*seek)(HippoIoHandle handle, HippoFileSeek type, int64_t step);
+    HippoIoErrorCode (*open)(struct HippoApiPrivData* priv_data, const char* target, HippoIoHandle* handle);
+    HippoIoErrorCode (*close)(HippoIoHandle handle);
+    HippoIoErrorCode (*size)(HippoIoHandle handle, uint64_t* res);
+    HippoIoErrorCode (*read)(HippoIoHandle handle, void* dest, uint64_t size);
+    HippoIoErrorCode (*seek)(HippoIoHandle handle, HippoFileSeek type, int64_t step);
 
-	struct HippoApiPrivData* priv_data;
+    struct HippoApiPrivData* priv_data;
 } HippoIoAPI;
 
-#define HippoIo_read_file_to_memory(api, filename, dest, size) api->read_file_to_memory(api->priv_data, filename, dest, size)
+#define HippoIo_read_file_to_memory(api, filename, dest, size) \
+    api->read_file_to_memory(api->priv_data, filename, dest, size)
 #define HippoIo_free_file_to_memory(api, dest) api->free_file_to_memory(api->priv_data, dest)
 
 #define HIPPO_FILE_API_VERSION 1
@@ -61,13 +62,13 @@ typedef struct HippoIoAPI {
 struct HippoMetadataAPIPrivData;
 
 enum HippoMetaEncoding {
-	HippoMetaEncoding_UTF8,
-	HippoMetaEncoding_ShiftJS2,
+    HippoMetaEncoding_UTF8,
+    HippoMetaEncoding_ShiftJS2,
 };
 
 enum HippoMetadataResult {
-	HippoMetadataResult_KeyNotFound = 0,
-	HippoMetadataResult_UnableToMakeQuery = -1,
+    HippoMetadataResult_KeyNotFound = 0,
+    HippoMetadataResult_UnableToMakeQuery = -1,
 };
 
 typedef uint64_t HippoMetadataId;
@@ -89,67 +90,31 @@ typedef uint64_t HippoMetadataId;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef struct HippoMetadataAPI {
-	struct HippoMetadataAPIPrivData* priv_data;
+    struct HippoMetadataAPIPrivData* priv_data;
 
-    HippoMetadataId (*create_url)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        const char* url);
+    HippoMetadataId (*create_url)(struct HippoMetadataAPIPrivData* priv_data, const char* url);
 
-    void (*set_tag)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        HippoMetadataId id,
-        const char* tag,
-        const char* data);
+    void (*set_tag)(struct HippoMetadataAPIPrivData* priv_data, HippoMetadataId id, const char* tag, const char* data);
 
-    void (*set_tag_f64)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        HippoMetadataId id,
-        const char* tag,
-        double d);
+    void (*set_tag_f64)(struct HippoMetadataAPIPrivData* priv_data, HippoMetadataId id, const char* tag, double d);
 
-    void (*add_subsong)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        HippoMetadataId parent_id,
-        int index,
-        const char* name,
-        float length);
+    void (*add_subsong)(struct HippoMetadataAPIPrivData* priv_data, HippoMetadataId parent_id, int index,
+                        const char* name, float length);
 
-    void (*add_sample)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        HippoMetadataId parent_id,
-        const char* text);
+    void (*add_sample)(struct HippoMetadataAPIPrivData* priv_data, HippoMetadataId parent_id, const char* text);
 
-    void (*add_instrument)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        HippoMetadataId parent_id,
-        const char* text);
+    void (*add_instrument)(struct HippoMetadataAPIPrivData* priv_data, HippoMetadataId parent_id, const char* text);
 
-    int (*begin_get_all)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        const char* url);
+    int (*begin_get_all)(struct HippoMetadataAPIPrivData* priv_data, const char* url);
 
-    void (*end_get_all)(
-        struct HippoMetadataAPIPrivData* priv_data);
+    void (*end_get_all)(struct HippoMetadataAPIPrivData* priv_data);
 
-    int (*get_all_entry)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        int entry,
-        const char** name,
-        const char** data,
-        int* len_name,
-        int* len_data);
+    int (*get_all_entry)(struct HippoMetadataAPIPrivData* priv_data, int entry, const char** name, const char** data,
+                         int* len_name, int* len_data);
 
-    int (*get_all_sample)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        int entry,
-        const char** text,
-        int* text_len);
+    int (*get_all_sample)(struct HippoMetadataAPIPrivData* priv_data, int entry, const char** text, int* text_len);
 
-    int (*get_all_instrument)(
-        struct HippoMetadataAPIPrivData* priv_data,
-        int entry,
-        const char** text,
-        int* text_len);
+    int (*get_all_instrument)(struct HippoMetadataAPIPrivData* priv_data, int entry, const char** text, int* text_len);
 
 } HippoMetadataAPI;
 
@@ -165,17 +130,20 @@ typedef struct HippoMetadataAPI {
 
 #define HippoMetadata_begin_get_all(api, url) api->begin_get_all(api->priv_data, url)
 #define HippoMetadata_end_all(api) api->begin_get_all(api->priv_data)
-#define HippoMetadata_get_all_entry(api, index, name, data, name_len, data_len) api->get_all_entry(api->priv_data, index, name, data, name_len, data_len)
-#define HippoMetadata_get_all_sample(api, index, text, text_len) api->get_all_sample(api->priv_data, index, text, text_len)
-#define HippoMetadata_get_all_instrument(api, index, text, text_len) api->get_all_instrument(api->priv_data, index, text, text_len)
+#define HippoMetadata_get_all_entry(api, index, name, data, name_len, data_len) \
+    api->get_all_entry(api->priv_data, index, name, data, name_len, data_len)
+#define HippoMetadata_get_all_sample(api, index, text, text_len) \
+    api->get_all_sample(api->priv_data, index, text, text_len)
+#define HippoMetadata_get_all_instrument(api, index, text, text_len) \
+    api->get_all_instrument(api->priv_data, index, text, text_len)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef enum HippoSettingResult {
-	HippoSettingsResult_Ok = 0,
-	HippoSettingsResult_SettingNotFound = 1,
-	HippoSettingsResult_KeyNotFound = 2,
-	HippoSettingsResult_InvalidType = 3,
+    HippoSettingsResult_Ok = 0,
+    HippoSettingsResult_SettingNotFound = 1,
+    HippoSettingsResult_KeyNotFound = 2,
+    HippoSettingsResult_InvalidType = 3,
 } HippoSettingResult;
 
 struct HippoMessageAPI;
@@ -185,9 +153,9 @@ struct HippoMessageAPI;
 
 typedef struct HippoMessageAPI {
     // Private internal data
-	struct HippoMessageAPI* priv_data;
-	// Send message (data must be a Flatbuffer formatted message)
-	void (*send)(struct HippoMessageAPI* handle, const unsigned char* data, int len);
+    struct HippoMessageAPI* priv_data;
+    // Send message (data must be a Flatbuffer formatted message)
+    void (*send)(struct HippoMessageAPI* handle, const unsigned char* data, int len);
 
 } HippoMessageAPI;
 
@@ -207,56 +175,79 @@ typedef struct HippoLogAPI {
     void (*log)(void* priv_data, int level, const char* file, int line, const char* fmt, ...);
 } HippoLogAPI;
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define hp_debug(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_DEBUG, NULL, 0, __VA_ARGS__); }
+#define hp_debug(...)                                                              \
+    {                                                                              \
+        extern HippoLogAPI* g_hp_log;                                              \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_DEBUG, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_debug(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_debug(...)                                                                       \
+    {                                                                                         \
+        extern HippoLogAPI* g_hp_log;                                                         \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
-#define hp_trace(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_TRACE, NULL, 0, __VA_ARGS__); }
+#define hp_trace(...)                                                              \
+    {                                                                              \
+        extern HippoLogAPI* g_hp_log;                                              \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_TRACE, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_trace(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_trace(...)                                                                       \
+    {                                                                                         \
+        extern HippoLogAPI* g_hp_log;                                                         \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
-#define hp_info(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_INFO, NULL, 0, __VA_ARGS__); }
+#define hp_info(...)                                                              \
+    {                                                                             \
+        extern HippoLogAPI* g_hp_log;                                             \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_INFO, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_info(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_info(...)                                                                       \
+    {                                                                                        \
+        extern HippoLogAPI* g_hp_log;                                                        \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
-#define hp_warn(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_WARN, NULL, 0, __VA_ARGS__); }
+#define hp_warn(...)                                                              \
+    {                                                                             \
+        extern HippoLogAPI* g_hp_log;                                             \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_WARN, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_warn(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_warn(...)                                                                       \
+    {                                                                                        \
+        extern HippoLogAPI* g_hp_log;                                                        \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
-#define hp_error(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_ERROR, NULL, 0, __VA_ARGS__); }
+#define hp_error(...)                                                              \
+    {                                                                              \
+        extern HippoLogAPI* g_hp_log;                                              \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_ERROR, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_error(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_error(...)                                                                       \
+    {                                                                                         \
+        extern HippoLogAPI* g_hp_log;                                                         \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
-#define hp_fatal(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_FATAL, NULL, 0, __VA_ARGS__); }
+#define hp_fatal(...)                                                              \
+    {                                                                              \
+        extern HippoLogAPI* g_hp_log;                                              \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_FATAL, NULL, 0, __VA_ARGS__); \
+    }
 
-#define hpfl_fatal(...) { \
-    extern HippoLogAPI* g_hp_log;  \
-    g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__); }
+#define hpfl_fatal(...)                                                                       \
+    {                                                                                         \
+        extern HippoLogAPI* g_hp_log;                                                         \
+        g_hp_log->log(g_hp_log->priv_data, HIPPO_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__); \
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -264,12 +255,12 @@ struct HippoServicePrivData;
 struct HippoSettingsAPI;
 
 typedef struct HippoServiceAPI {
-	void* private_data;
-	const struct HippoLogAPI* (*get_log_api)(void* private_data, int api_version);
-	const struct HippoIoAPI* (*get_io_api)(void* private_data, int api_version);
-	const struct HippoMetadataAPI* (*get_metadata_api)(void* private_data, int api_version);
-	const struct HippoMessageAPI* (*get_message_api)(void* private_data, int api_version);
-	const struct HippoSettingsAPI* (*get_settings_api)(void* private_data, int api_version);
+    void* private_data;
+    const struct HippoLogAPI* (*get_log_api)(void* private_data, int api_version);
+    const struct HippoIoAPI* (*get_io_api)(void* private_data, int api_version);
+    const struct HippoMetadataAPI* (*get_metadata_api)(void* private_data, int api_version);
+    const struct HippoMessageAPI* (*get_message_api)(void* private_data, int api_version);
+    const struct HippoSettingsAPI* (*get_settings_api)(void* private_data, int api_version);
 } HippoServiceAPI;
 
 #define HippoServiceAPI_get_log_api(api, version) api->get_log_api(api->private_data, version)
@@ -281,23 +272,24 @@ typedef struct HippoServiceAPI {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // API Version of the plugin, always set this to HIPPO_PLAYBACK_PLUGIN_API_VERSION
-//uint64_t api_version;
+// uint64_t api_version;
 
 // Name of the plugin. This name should be unique or it may fail to load if there is a collision.
-//const char* name;
+// const char* name;
 
 // Scematic version of the plugin. If the version doesn't follow the rules of SemVersion it may fail to load.
-//const char* version;
+// const char* version;
 
 // Ask the plugin if it can play some data. The plugin has to determine from the header if it supports the
 // file or not. The input data is at least 2048 bytes but can be less if the the total file is smaller.
 //
 // Notice that no user data is provided with this as the plugin instance hasn't actually been crated
 // The plugin must support to parse this data without custom data being setup.
-//enum HippoProbeResult (*probe_can_play)(const uint8_t* data, uint32_t data_size, const char* filename, uint64_t total_size);
+// enum HippoProbeResult (*probe_can_play)(const uint8_t* data, uint32_t data_size, const char* filename, uint64_t
+// total_size);
 
 // Returns a comma separated list of supported extensions
-//const char* (*supported_extensions)();
+// const char* (*supported_extensions)();
 
 // Create an instace of the plugin. The user is expected to return an instance data poniter
 // that will get passed to the other callback functions.
@@ -353,9 +345,9 @@ struct HippoMetadataAPI;
 struct HippoSettingsAPI;
 
 enum {
-    HippoOutputType_u8  = 1,
+    HippoOutputType_u8 = 1,
     HippoOutputType_s16 = 2,
-    HippoOutputType_s24 = 3, // Tightly packed. 3 bytes per sample.
+    HippoOutputType_s24 = 3,  // Tightly packed. 3 bytes per sample.
     HippoOutputType_s32 = 4,
     HippoOutputType_f32 = 5,
 };
@@ -368,22 +360,23 @@ typedef struct HippoReadInfo {
 } HippoReadInfo;
 
 typedef struct HippoPlaybackPlugin {
-	uint64_t api_version;
-	const char* name;
-	const char* version;
-	const char* library_version;
-	enum HippoProbeResult (*probe_can_play)(const uint8_t* data, uint32_t data_size, const char* filename, uint64_t total_size);
-	const char* (*supported_extensions)();
-	void* (*create)(const HippoServiceAPI* services);
-	int (*destroy)(void* user_data);
-	void (*event)(void* user_data, const unsigned char* data, int len);
-	int (*open)(void* user_data, const char* url, int subsong, const struct HippoSettingsAPI* settings);
-	int (*close)(void* user_data);
-	HippoReadInfo (*read_data)(void* user_data, void* dest, uint32_t max_output_bytes, uint32_t native_sample_rate);
-	int (*seek)(void* user_data, int ms);
-	int (*metadata)(const char* url, const HippoServiceAPI* services);
-	void (*static_init)(struct HippoLogAPI* log, const HippoServiceAPI* services);
-	void (*settings_updated)(void* user_data, const struct HippoSettingsAPI* settings);
+    uint64_t api_version;
+    const char* name;
+    const char* version;
+    const char* library_version;
+    enum HippoProbeResult (*probe_can_play)(const uint8_t* data, uint32_t data_size, const char* filename,
+                                            uint64_t total_size);
+    const char* (*supported_extensions)();
+    void* (*create)(const HippoServiceAPI* services);
+    int (*destroy)(void* user_data);
+    void (*event)(void* user_data, const unsigned char* data, int len);
+    int (*open)(void* user_data, const char* url, int subsong, const struct HippoSettingsAPI* settings);
+    int (*close)(void* user_data);
+    HippoReadInfo (*read_data)(void* user_data, void* dest, uint32_t max_output_bytes, uint32_t native_sample_rate);
+    int (*seek)(void* user_data, int ms);
+    int (*metadata)(const char* url, const HippoServiceAPI* services);
+    void (*static_init)(struct HippoLogAPI* log, const HippoServiceAPI* services);
+    void (*settings_updated)(void* user_data, const struct HippoSettingsAPI* settings);
 } HippoPlaybackPlugin;
 
 #define FOOBAR 2
@@ -410,4 +403,3 @@ typedef struct HippoPlaybackPlugin {
 #ifdef _cplusplus
 }
 #endif
-
