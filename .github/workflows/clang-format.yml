@@ -11,7 +11,7 @@ jobs:
     - uses: DoozyX/clang-format-lint-action@v0.11
       with:
         source: './src'
-        exclude: './src/external'
+        exclude: './src/external ./src/plugins'
         extensions: 'h,cpp,c'
         clangFormatVersion: 11
         inplace: True
